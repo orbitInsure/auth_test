@@ -8,6 +8,8 @@ function App() {
   const [userDetails, setUserDetails] = useState(null);
   const [error, setError] = useState('');
 
+  const redirectUri = useMemo(() => window.location.origin + window.location.pathname, []);
+
   const profileFields = useMemo(() => {
     if (!userDetails) return [];
     return Object.entries(userDetails)
@@ -22,7 +24,9 @@ function App() {
       .init({
         onLoad: 'check-sso',
         pkceMethod: 'S256',
-        checkLoginIframe: false
+        checkLoginIframe: false,
+        redirectUri,
+        silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`
       })
       .then(async (authenticated) => {
         if (!isMounted) return;
@@ -66,11 +70,11 @@ function App() {
       isMounted = false;
       clearInterval(refreshInterval);
     };
-  }, []);
+  }, [redirectUri]);
 
   const handleLogin = () => {
     setError('');
-    keycloak.login();
+    keycloak.login({ redirectUri });
   };
 
   if (isLoading) {
