@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Silent Check SSO</title>
+  </head>
+  <body>
+    <script>
+      // This page is used by Keycloak for silent SSO checks.
+      // It must be served from the same origin as the app.
+      parent.postMessage(location.href, location.origin);
+    </script>
+  </body>
+</html>
